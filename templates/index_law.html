@@ -64,7 +64,7 @@
                     var div = document.createElement('div');
                     div.className = 'server-message';
                     var p = document.createElement('p');
-                    p.innerHTML = "<strong>" + "机器人: " + "</strong>";
+                    p.innerHTML = "<strong>" + "机器人回答: " + "</strong>";
                     div.appendChild(p);
                     messages.appendChild(div);
                 } else if (data.type === "stream") {
@@ -81,6 +81,7 @@
                     header.innerHTML = data.message;
                 } else if (data.type === "end") {
                     var p = messages.lastChild.lastChild;
+                    p.innerHTML += "<br>" + "<strong>" + "法律来源： " + "</strong>" + "<br>";
                     p.innerHTML += data.message;
                     p.innerHTML += "<br>";
                     var header = document.getElementById('header');

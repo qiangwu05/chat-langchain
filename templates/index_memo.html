@@ -51,7 +51,7 @@
         }
     </style>
     <script>
-        var endpoint = "ws://localhost:9999/memo";
+        var endpoint = "ws://localhost:9000/memo";
         var ws = new WebSocket(endpoint);
         // Receive message from server word by word. Display the words as they are received.
         ws.onmessage = function (event) {
@@ -121,12 +121,12 @@
         function startMemo(event) {
             event.preventDefault();
             var statement = document.getElementById('statementText').value;
-            //if (statement === "")
-            //    return;
+            if (statement === "")
+                return;
             var law = document.getElementById('lawText').value;
             var question = document.getElementById('questionText').value;
-            //if (question === "")
-            //    return;
+            if (question === "")
+                return;
             var caution = document.getElementById('cautionText').value;
             ws.send(JSON.stringify({
                 id: "memo",
@@ -150,16 +150,16 @@
             <hr class="border-gray-500 mb-5" style="margin-top: 20px;">
             <div id="messages" class="overflow-auto" style="max-height: 500px;">
             </div>
-            <form action="" class="form-inline mt-5" id="statement-form" onsubmit="sendMessage(event)">
+            <form action="" class="form-inline mt-5" id="statement-form" onsubmit="">
                 <input type="text" class="form-control" placeholder="案情陈述" id="statementText">
             </form>
-            <form action="" class="form-inline mt-5" id="law-form" onsubmit="sendMessage(event)">
+            <form action="" class="form-inline mt-5" id="law-form" onsubmit="">
                 <input type="text" class="form-control" placeholder="相关法律" id="lawText">
             </form>
-            <form action="" class="form-inline mt-5" id="question-form" onsubmit="sendMessage(event)">
+            <form action="" class="form-inline mt-5" id="question-form" onsubmit="">
                 <input type="text" class="form-control" placeholder="相关问题" id="questionText">
             </form>
-            <form action="" class="form-inline mt-5" id="caution-form" onsubmit="sendMessage(event)">
+            <form action="" class="form-inline mt-5" id="caution-form" onsubmit="">
                 <input type="text" class="form-control" placeholder="注意事项" id="cautionText">
             </form>
             <form action="" class="form-inline mt-5" id="question-form" onsubmit="startMemo(event)">

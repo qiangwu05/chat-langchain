@@ -6,7 +6,7 @@
     "configurations": [
     {
         "name": "Attach to Edge",
-        "port": 9222,
+        "port": 9000,
         "request": "attach",
         "type": "msedge",
         "webRoot": "${workspaceFolder}"
@@ -20,7 +20,7 @@
                 "main:app",
                 "--reload",
                 "--port", //these arg are optional
-                "9999"
+                "9000"
             ],
             "jinja": true,
             "justMyCode": false 

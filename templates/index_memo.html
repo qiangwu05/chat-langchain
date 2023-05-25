@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>聊天机器人</title>
+    <title>备忘录</title>
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .chat-body {
-            width: 950px;
+            width: 1050px;
             margin: 50px auto;
         }
         .card-body {
@@ -32,7 +32,7 @@
         }
         .form-control {
             width: 80%;
-            background-color: #333;
+            background-color: #666;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -51,7 +51,7 @@
         }
     </style>
     <script>
-        var endpoint = "ws://localhost:9000/chatbot";
+        var endpoint = "ws://localhost:9999/memo";
         var ws = new WebSocket(endpoint);
         // Receive message from server word by word. Display the words as they are received.
         ws.onmessage = function (event) {
@@ -64,7 +64,24 @@
                     var div = document.createElement('div');
                     div.className = 'server-message';
                     var p = document.createElement('p');
-                    p.innerHTML = "<strong>" + "机器人: " + "</strong>";
+                    p.innerHTML = data.message;
+                    var statement = document.getElementById('statementText').value;
+                    if (statement != "") {
+                        p.innerHTML += "<strong>" + "案情陈述: " + "</strong>" + statement + "<br>"; 
+                    }
+                    var law = document.getElementById('lawText').value;
+                    if (law != "") {
+                        p.innerHTML += "<strong>" + "相关法律: " + "</strong>" + law + "<br>"; 
+                    }
+                    var question = document.getElementById('questionText').value;
+                    if (question != "") {
+                        p.innerHTML += "<strong>" + "相关问题: " + "</strong>" + question + "<br>"; 
+                    }
+                    var caution = document.getElementById('cautionText').value;
+                    if (caution != "") {
+                        p.innerHTML += "<strong>" + "注意事项: " + "</strong>" + caution + "<br>";
+                    } 
+                    p.innerHTML += "<strong>" + "备忘录: " + "</strong>";
                     div.appendChild(p);
                     messages.appendChild(div);
                 } else if (data.type === "stream") {
@@ -81,58 +98,71 @@
                     header.innerHTML = data.message;
                 } else if (data.type === "end") {
                     var header = document.getElementById('header');
-                    header.innerHTML = "问个问题";
+                    header.innerHTML = "填写案情、法律、问题";
                     var button = document.getElementById('send');
                     button.innerHTML = "Send";
                     button.disabled = false;
+                    var p = messages.lastChild.lastChild;
+                    p.innerHTML += data.message;
                 } else if (data.type === "error") {
                     var header = document.getElementById('header');
-                    header.innerHTML = "问个问题";
+                    header.innerHTML = "填写案情、法律、问题";
                     var button = document.getElementById('send');
                     button.innerHTML = "Send";
                     button.disabled = false;
                     var p = messages.lastChild.lastChild;
                     p.innerHTML += data.message;
                 }
-            } else {
-                var div = document.createElement('div');
-                div.className = 'client-message';
-                var p = document.createElement('p');
-                p.innerHTML = "<strong>" + "您: " + "</strong>";
-                p.innerHTML += data.message;
-                div.appendChild(p);
-                messages.appendChild(div);
-            }
+            } 
             // Scroll to the bottom of the chat
             messages.scrollTop = messages.scrollHeight;
         };
-        // Send message to server
-        function sendMessage(event) {
+        
+        function startMemo(event) {
             event.preventDefault();
-            var message = document.getElementById('messageText').value;
-            if (message === "") {
-                return;
-            }
-            ws.send(message);
-            document.getElementById('messageText').value = "";
+            var statement = document.getElementById('statementText').value;
+            //if (statement === "")
+            //    return;
+            var law = document.getElementById('lawText').value;
+            var question = document.getElementById('questionText').value;
+            //if (question === "")
+            //    return;
+            var caution = document.getElementById('cautionText').value;
+            ws.send(JSON.stringify({
+                id: "memo",
+                content: [statement, law, question, caution]}))
 
             // Turn the button into a loading button
             var button = document.getElementById('send');
             button.innerHTML = "加载中...";
             button.disabled = true;
         }
+
+        function sendMessage(event) {
+        }
     </script>
 </head>
 <body class="bg-black">
     <div class="chat-body card">
         <div class="card-body p-5">
-            <h4 class="card-title text-center text-xl font-medium"> 聊天机器人 </h4>
-            <p class="card-text text-center text-sm" id="header"> 问个问题 </p>
+            <h4 class="card-title text-center text-xl font-medium"> 备忘录生成 </h4>
+            <p class="card-text text-center text-sm" id="header"> 填写案情、法律、问题 </p>
             <hr class="border-gray-500 mb-5" style="margin-top: 20px;">
             <div id="messages" class="overflow-auto" style="max-height: 500px;">
             </div>
-            <form action="" class="form-inline mt-5" id="chat-form" onsubmit="sendMessage(event)">
-                <input type="text" class="form-control" placeholder="写你的问题" id="messageText">
+            <form action="" class="form-inline mt-5" id="statement-form" onsubmit="sendMessage(event)">
+                <input type="text" class="form-control" placeholder="案情陈述" id="statementText">
+            </form>
+            <form action="" class="form-inline mt-5" id="law-form" onsubmit="sendMessage(event)">
+                <input type="text" class="form-control" placeholder="相关法律" id="lawText">
+            </form>
+            <form action="" class="form-inline mt-5" id="question-form" onsubmit="sendMessage(event)">
+                <input type="text" class="form-control" placeholder="相关问题" id="questionText">
+            </form>
+            <form action="" class="form-inline mt-5" id="caution-form" onsubmit="sendMessage(event)">
+                <input type="text" class="form-control" placeholder="注意事项" id="cautionText">
+            </form>
+            <form action="" class="form-inline mt-5" id="question-form" onsubmit="startMemo(event)">
                 <button id="send" type="submit" class="btn btn-primary">Send</button>
             </form>
         </div>

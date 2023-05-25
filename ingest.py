@@ -11,8 +11,6 @@ from langchain.vectorstores.faiss import FAISS
 
 def ingest_docs():
     """Get documents from web pages."""
-    #loader = ReadTheDocsLoader("chat-langchain/langchain.readthedocs.io/en/latest")
-    #loader = UnstructuredHTMLLoader("chat-langchain/langchain.readthedocs.io/content_1882895.htm")
     loader = BSHTMLLoader("langchain.readthedocs.io/en/latest/content_1882895.htm")
     raw_documents = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(

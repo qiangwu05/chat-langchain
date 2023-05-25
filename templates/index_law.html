@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>聊天机器人</title>
+    <title>中国法律查询</title>
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .chat-body {
@@ -51,7 +51,7 @@
         }
     </style>
     <script>
-        var endpoint = "ws://localhost:9000/chatbot";
+        var endpoint = "ws://localhost:9000/law";
         var ws = new WebSocket(endpoint);
         // Receive message from server word by word. Display the words as they are received.
         ws.onmessage = function (event) {
@@ -80,6 +80,9 @@
                     var header = document.getElementById('header');
                     header.innerHTML = data.message;
                 } else if (data.type === "end") {
+                    var p = messages.lastChild.lastChild;
+                    p.innerHTML += data.message;
+                    p.innerHTML += "<br>";
                     var header = document.getElementById('header');
                     header.innerHTML = "问个问题";
                     var button = document.getElementById('send');
@@ -126,7 +129,7 @@
 <body class="bg-black">
     <div class="chat-body card">
         <div class="card-body p-5">
-            <h4 class="card-title text-center text-xl font-medium"> 聊天机器人 </h4>
+            <h4 class="card-title text-center text-xl font-medium"> 中国法律查询 </h4>
             <p class="card-text text-center text-sm" id="header"> 问个问题 </p>
             <hr class="border-gray-500 mb-5" style="margin-top: 20px;">
             <div id="messages" class="overflow-auto" style="max-height: 500px;">
